@@ -1,7 +1,70 @@
 <!doctype html>
 <html>
 	<head>
-		<style link='style.css'></style>
+		<style >
+			:root {
+				--color-one : #9900E6;
+				--color-two : #4DE1FF;
+				--color-three : #FF4DFF;
+				}
+			body {
+				background-color : var(--color-one);
+			}
+			h1 {
+				color : var(--color-three);
+			}
+			#page-title {
+				text-align : center;
+				font-size : 60px;
+			}
+			#comando {
+				display:block;
+				height : 50px;
+				text-align: center;
+			}
+			.control {
+				display: inline-block;
+				font-size : 33px;
+				border: 0;
+				margin : 0;
+				padding : 0;
+				color : var(--color-one);
+			}
+			#tasks {
+				display : block;
+			}
+			.task {
+				text-align : center;
+				display : block;
+			}
+			.sub-task {
+				display : inline-block;
+				font-size: 25px;
+				color : red;
+			}
+			.task-remove {
+				color :black;
+				background-color: red;
+			}
+
+			#title{
+				width: 20%;
+			}
+			#description{
+				width : 50%;
+			}
+			#boton{
+				width : 10%;
+				background-color:var(--color-three);
+			}
+			#boton:hover{
+				background-color: var(--color-one);
+				color : var(--color-three);
+			}
+			#undo{
+					display:none;
+			}
+		</style>
 	</head>
 	
 
@@ -10,17 +73,50 @@
 	<body>
 		<div id='navegation'>
 
-			<h1>To Do List</h1>
+			<h1 id='page-title'>To Do List</h1>
 		</div>
 		
-		<div id='cuerpo'>
-			<input type='text' id='title'></input>
+		<div id='comando'>
+			<input type='text' class='control' id='title'></input>
 			
-			<input type='text' id='description'></input>
-			<button id='boton'>add</button>
+			<input type='text' class='control' id='description'></input>
+			<div class='control' id='boton'>add</div>
+			<div class='control' id='undo'>undo</div>
+		</div>			
+		<div id='tasks'>
 		</div>
-		
 
-		<script scr='jason.js'></script>
+
+
+
+		<script>
+			const title = document.getElementById('title');
+			const description = document.getElementById('description');
+			const boton = document.getElementById('boton');
+
+			boton.addEventListener('click', function(e){
+				if (title.value == '' || description.value == '') {
+								return 0
+				}
+				addTask(title.value, description.value, e);
+			});
+
+			function addTask(title, des, event){
+				const task = document.createElement('div');
+
+				task.innerHTML = `
+					<p class='sub-task task-title'>${title}</p>
+					<p class='sub-task task-description'>${des}</p>
+					<button class='task-remove sub-task'>remove</button>
+					`;
+				task.classList.add('task')
+				document.getElementById('tasks').appendChild(task);	
+				
+				task.lastChild.previousSibling.addEventListener('click', function (e) {
+					e.target.parentNode.remove();			
+				});
+			};
+
+		</script>
 	</body>
 </html>
