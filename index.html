@@ -3,12 +3,18 @@
 	<head>
 		<style >
 			:root {
-				--color-one : #9900E6;
-				--color-two : #4DE1FF;
-				--color-three : #FF4DFF;
+				--color-one : rgb(119,0,179); /*purple*/
+				--color-two : rgb(77,195,255); /*lightblue*/
+				--color-three : rgb(255,0,255); /*pink*/
+				--color-four : rgb(255, 0,0); /*red*/
 				}
 			body {
 				background-color : var(--color-one);
+				margin:0;
+				padding:0;
+				width:100%;
+				height:1000px;
+				overflow:hidden;
 			}
 			h1 {
 				color : var(--color-three);
@@ -31,20 +37,33 @@
 				color : var(--color-one);
 			}
 			#tasks {
-				display : block;
+				display : flex;
+				flex-direction: column-reverse;
+				
 			}
 			.task {
 				text-align : center;
-				display : block;
+				display : flex;
+				justify-content: space-evenly;
+				align-items:baseline;
 			}
 			.sub-task {
 				display : inline-block;
-				font-size: 25px;
-				color : red;
+				font-size: 35px;
 			}
 			.task-remove {
 				color :black;
-				background-color: red;
+				font-size: 15px;
+			 height:80%;
+				background-color: var(--color-four);
+			}
+			.task-title{
+				color: var(--color-three);
+				width: 25%;
+			}
+			.task-description{
+				color: var(--color-two);
+				width : 55%;
 			}
 
 			#title{
@@ -55,11 +74,11 @@
 			}
 			#boton{
 				width : 10%;
-				background-color:var(--color-three);
+				background-color:var(--color-two);
 			}
 			#boton:hover{
 				background-color: var(--color-one);
-				color : var(--color-three);
+				color : var(--color-two);
 			}
 			#undo{
 					display:none;
@@ -70,7 +89,7 @@
 
 
 
-	<body>
+	<body onMouseMove='recolor(event)'>
 		<div id='navegation'>
 
 			<h1 id='page-title'>To Do List</h1>
@@ -80,7 +99,7 @@
 			<input type='text' class='control' id='title'></input>
 			
 			<input type='text' class='control' id='description'></input>
-			<div class='control' id='boton'>add</div>
+			<button class='control' id='boton' tabindex='0'>add</button>
 			<div class='control' id='undo'>undo</div>
 		</div>			
 		<div id='tasks'>
@@ -95,26 +114,57 @@
 			const boton = document.getElementById('boton');
 
 			boton.addEventListener('click', function(e){
-				if (title.value == '' || description.value == '') {
+				if (description.value == '') {
 								return 0
 				}
 				addTask(title.value, description.value, e);
+				title.value = '';
+				description.value  = '';
 			});
 
 			function addTask(title, des, event){
 				const task = document.createElement('div');
 
-				task.innerHTML = `
-					<p class='sub-task task-title'>${title}</p>
-					<p class='sub-task task-description'>${des}</p>
+					if (!title){
+													task.innerHTML = `
+					<p class='sub-task task-description'><strong>${des}</strong></p>
+					<input class='sub-task task-checkbox' type='checkbox'/>
 					<button class='task-remove sub-task'>remove</button>
 					`;
+					}else {
+				task.innerHTML = `
+					<p class='sub-task task-title'><strong>${title}</strong></p>
+					<p class='sub-task task-description'><strong>${des}</strong></p>
+					<input class='sub-task task-checkbox' type='checkbox'/>
+					<button class='task-remove sub-task'>remove</button>
+					`;}
 				task.classList.add('task')
 				document.getElementById('tasks').appendChild(task);	
 				
 				task.lastChild.previousSibling.addEventListener('click', function (e) {
 					e.target.parentNode.remove();			
 				});
+			};
+
+
+							const width = window.innerWidth;
+							const height = window.innerHeight;
+
+
+			function recolor(e){
+							let x = e.clientX;
+							let y = e.clientY;
+
+							let deltax = x/width;
+							let deltay = y/height;
+							let d = (deltay+deltax)/2;
+
+							const r = document.querySelector(':root');
+											console.log(deltax, deltay, d);
+											
+											r.style.setProperty('--color-one', `rgb(${Math.floor(119-(42*deltax))},${Math.floor(195*deltay)},${Math.floor(179+76*d)})`);
+											r.style.setProperty('--color-two', `rgb(${Math.floor(77-(178*deltax))},${Math.floor(195-(195*deltay))},255)`);
+							r.style.setProperty('--color-three', `rgb(${Math.floor(255-(136*deltax))},0,${Math.floor(255-76*d)}`);
 			};
 
 		</script>
